@@ -1,0 +1,10 @@
+# Ignore node_modules for both apps
+mobile-app/node_modules/
+web-app/node_modules/
+
+# Optional: Ignore build artifacts
+web-app/build/
+mobile-app/build/
+
+# Ignore logs
+*.log
