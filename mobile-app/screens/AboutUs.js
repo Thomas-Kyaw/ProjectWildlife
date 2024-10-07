@@ -84,7 +84,6 @@ export default function AboutUs() {
       </View>
 
       {/* Contact Information */}
-      {/* Contact Information */}
       <View style={styles.footer}>
         <Text style={styles.footerTitle}>Contact Information</Text>
 
