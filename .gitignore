@@ -8,3 +8,26 @@ mobile-app/build/
 
 # Ignore logs
 *.log
+node_modules
+
+# Ignore .env files
+.env
+
+# Ignore .DS_Store
+.DS_Store
+
+# Ignore .vscode
+.vscode
+
+# Ignore .idea
+.idea
+
+# Ignore photos
+*.jpg *.jpeg *.png *.gif
+
+# Ignore .csv files
+*.csv
+
+
+
+

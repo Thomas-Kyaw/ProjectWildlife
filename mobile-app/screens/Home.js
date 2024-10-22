@@ -1,22 +1,35 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Home({ navigation }) {
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
       {/* Welcome and Search */}
       <View style={styles.header}>
         <Text style={styles.title}>Welcome to Semenggoh Nature Reserve</Text>
-        <Text style={styles.subtitle}>Explore wildlife and learn more about sustainable tourism</Text>
+        <Text style={styles.subtitle}>
+          Explore wildlife and learn more about sustainable tourism
+        </Text>
       </View>
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <MaterialIcons name="search" size={24} color="gray" />
-        <TextInput 
-          style={styles.searchInput} 
-          placeholder="Search for animals or activities" 
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search for animals or activities"
         />
       </View>
 
@@ -25,11 +38,17 @@ export default function Home({ navigation }) {
         <Text style={styles.sectionTitle}>Featured Animals</Text>
         <ScrollView horizontal>
           <TouchableOpacity style={styles.animalCard}>
-          <Image source={require('../assets/orangutan-1.jpg')} style={styles.animalImage} />
+            <Image
+              source={require("../assets/orangutan-1.jpg")}
+              style={styles.animalImage}
+            />
             <Text style={styles.animalText}>Orangutan</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.animalCard}>
-          <Image source={require('../assets/elephant-1.jpg')} style={styles.animalImage} />  
+            <Image
+              source={require("../assets/elephant-1.jpg")}
+              style={styles.animalImage}
+            />
             <Text style={styles.animalText}>Bornean Elephant</Text>
           </TouchableOpacity>
         </ScrollView>
@@ -38,11 +57,17 @@ export default function Home({ navigation }) {
       {/* Recent Sightings Section */}
       <View style={styles.sightingsSection}>
         <Text style={styles.sectionTitle}>Recent Sightings</Text>
-        <TouchableOpacity style={styles.sightingCard} onPress={() => navigation.navigate('Sightings')}>
-          <Image source={require('../assets/orangutan-2.jpg')} style={styles.sightingImage} />
+        <TouchableOpacity
+          style={styles.sightingCard}
+          onPress={() => navigation.navigate("Sightings")}
+        >
+          <Image
+            source={require("../assets/orangutan-2.jpg")}
+            style={styles.sightingImage}
+          />
           <Text style={styles.sightingText}>Spotted: Orangutan Family</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Sightings')}>
+        <TouchableOpacity onPress={() => navigation.navigate("Sightings")}>
           <Text style={styles.viewMoreText}>View More Sightings</Text>
         </TouchableOpacity>
       </View>
@@ -50,9 +75,9 @@ export default function Home({ navigation }) {
       {/* Explore Tourism Section */}
       <View style={styles.exploreSection}>
         <Text style={styles.sectionTitle}>Explore Tourism</Text>
-        <TouchableOpacity 
-          style={styles.exploreButton} 
-          onPress={() => navigation.navigate('Tourism')}
+        <TouchableOpacity
+          style={styles.exploreButton}
+          onPress={() => navigation.navigate("Tourism")}
         >
           <Text style={styles.exploreButtonText}>Explore Tourism</Text>
         </TouchableOpacity>
@@ -60,14 +85,29 @@ export default function Home({ navigation }) {
 
       {/* Action Buttons Section */}
       <View style={styles.actionButtons}>
-        <TouchableOpacity style={styles.actionCard} onPress={() => navigation.navigate('Donation')}>
+        <TouchableOpacity
+          style={styles.actionCard}
+          onPress={() => navigation.navigate("Donation")}
+        >
           <Text style={styles.actionText}>Donate</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionCard} onPress={() => navigation.navigate('ContactUs')}>
+        <TouchableOpacity
+          style={styles.actionCard}
+          onPress={() => navigation.navigate("ContactUs")}
+        >
           <Text style={styles.actionText}>Contact Us</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionCard} onPress={() => navigation.navigate('AboutUs')}>
+        <TouchableOpacity
+          style={styles.actionCard}
+          onPress={() => navigation.navigate("AboutUs")}
+        >
           <Text style={styles.actionText}>About Us</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.actionCard}
+          onPress={() => navigation.navigate("UploadImage")}
+        >
+          <Text style={styles.actionText}>Identify</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -78,7 +118,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   contentContainer: {
     paddingBottom: 100, // Add bottom padding so content isn't hidden by Tab Navigator
@@ -89,20 +129,20 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2E8B57', // Dark green
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#2E8B57", // Dark green
+    textAlign: "center",
     marginBottom: 5,
   },
   subtitle: {
     fontSize: 16,
-    color: '#555',
-    textAlign: 'center',
+    color: "#555",
+    textAlign: "center",
   },
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
     padding: 10,
     borderRadius: 10,
     marginVertical: 15,
@@ -114,8 +154,8 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginVertical: 15,
   },
   featuredSection: {
@@ -126,22 +166,22 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   animalImage: {
-    width: '100%',
+    width: "100%",
     height: 100,
     borderRadius: 10,
   },
   animalText: {
     marginTop: 5,
     fontSize: 14,
-    textAlign: 'center',
-    fontWeight: 'bold',
+    textAlign: "center",
+    fontWeight: "bold",
   },
   sightingsSection: {
     marginBottom: 20,
   },
   sightingCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
   },
   sightingImage: {
@@ -154,37 +194,37 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   viewMoreText: {
-    color: '#1B95E0',
-    fontWeight: 'bold',
-    textAlign: 'right',
+    color: "#1B95E0",
+    fontWeight: "bold",
+    textAlign: "right",
   },
   exploreSection: {
     marginBottom: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   exploreButton: {
-    backgroundColor: '#1B95E0',
+    backgroundColor: "#1B95E0",
     padding: 15,
     borderRadius: 10,
   },
   exploreButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
   },
   actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   actionCard: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
     padding: 15,
     borderRadius: 10,
-    width: '30%',
-    alignItems: 'center',
+    width: "30%",
+    alignItems: "center",
   },
   actionText: {
     fontSize: 14,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
