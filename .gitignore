@@ -8,3 +8,8 @@ mobile-app/build/
 
 # Ignore logs
 *.log
+shared/backend/frozen_east_text_detection.pb
+shared/backend/myenv/
+myenv/
+shared/backend/frozen_east_text_detection.pb
+shared/backend/myenv/
