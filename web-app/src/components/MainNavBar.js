@@ -25,6 +25,7 @@ const MainNavBar = () => {
       <ul className="main-nav-links">
         <li><Link to="/about-us">About Us</Link></li>
         <li><Link to="/contact-us">Contact Us</Link></li>
+        <li><Link to="/login">Login</Link></li> {/* Link to login page */}
       </ul>
     </nav>
   );

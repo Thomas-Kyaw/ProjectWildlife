@@ -8,3 +8,6 @@ mobile-app/build/
 
 # Ignore logs
 *.log
+
+web-app/.env
+

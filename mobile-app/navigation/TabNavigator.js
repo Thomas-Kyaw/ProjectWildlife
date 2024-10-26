@@ -6,7 +6,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import Home from '../screens/Home';
 import Sightings from '../screens/Sightings';
 import Info from '../screens/Info';
-import Tourism from '../screens/Tourism';  // Import Tourism screen
+import Tourism from '../screens/Tourism';
+import Profile from '../screens/Profile';  // Import Profile screen
 
 const Tab = createBottomTabNavigator();
 
@@ -41,7 +42,7 @@ export default function TabNavigator() {
       />
       <Tab.Screen
         name="Tourism"
-        component={Tourism}  // Tourism screen added here
+        component={Tourism}
         options={{
           tabBarLabel: 'Tourism',
           tabBarIcon: ({ color, size }) => (
@@ -56,6 +57,16 @@ export default function TabNavigator() {
           tabBarLabel: 'Info',
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="info" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="person" color={color} size={size} />
           ),
         }}
       />

@@ -7,19 +7,29 @@ import Donation from '../screens/Donation';
 import ContactUs from '../screens/ContactUs';
 import AboutUs from '../screens/AboutUs';
 import Payment from '../screens/Payment';  // Import the Payment screen
+import Login from '../screens/Login';      // Import Login screen
+import Register from '../screens/Register';// Import Register screen
 
 const Stack = createStackNavigator();
 
 export default function StackNavigator() {
   return (
     <Stack.Navigator>
-      {/* Main Tab Navigator */}
+      <Stack.Screen 
+        name="Login" 
+        component={Login} 
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen 
+        name="Register" 
+        component={Register} 
+        options={{ headerShown: false }} 
+      />
       <Stack.Screen 
         name="Main" 
         component={TabNavigator} 
         options={{ headerShown: false }} 
       />
-      {/* Stack Screens */}
       <Stack.Screen 
         name="AnimalDetails" 
         component={AnimalDetails} 
@@ -49,7 +59,7 @@ export default function StackNavigator() {
       />
       <Stack.Screen 
         name="Payment" 
-        component={Payment}  // Add Payment screen here
+        component={Payment} 
         options={{ title: 'Complete Donation' }} 
       />
     </Stack.Navigator>

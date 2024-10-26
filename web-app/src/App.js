@@ -9,6 +9,10 @@ import WildlifeDetails from './pages/WildlifeDetails';
 import Tourism from './pages/Tourism';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
+import Login from './pages/Login'; // Import login page
+import Register from './pages/Register'; // Import register page
+import Admin from './pages/Admin'; // Create these pages for admin and user redirection
+import User from './pages/User';
 import './styles/App.css';
 
 function App() {
@@ -25,6 +29,10 @@ function App() {
           <Route path="/tourism" element={<Tourism />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/login" element={<Login />} /> {/* Login route */}
+          <Route path="/register" element={<Register />} /> {/* Register route */}
+          <Route path="/admin" element={<Admin />} /> {/* Admin redirect */}
+          <Route path="/user" element={<User />} /> {/* User redirect */}
         </Routes>
       </div>
       <Footer />
