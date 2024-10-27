@@ -45,16 +45,15 @@ export default function Sightings({ navigation }) {
 
   const renderSighting = ({ item }) => (
     <TouchableOpacity
-    style={styles.sightingCard}
-    onPress={() => navigation.navigate('AnimalDetails', { sighting: item })}
+      style={styles.sightingCard}
+      onPress={() => navigation.navigate('AnimalDetails', { sighting: item })}
     >
       <Image source={item.image} style={styles.sightingImage} />
       <View style={styles.sightingInfo}>
-      <Text style={styles.sightingName}>{item.name}</Text>
-      <Text style={styles.sightingDescription}>{item.description}</Text>
+        <Text style={styles.sightingName}>{item.name}</Text>
+        <Text style={styles.sightingDescription}>{item.description}</Text>
       </View>
     </TouchableOpacity>
-
   );
 
   return (
@@ -66,6 +65,14 @@ export default function Sightings({ navigation }) {
         renderItem={renderSighting}
         contentContainerStyle={styles.listContainer}
       />
+      
+      {/* Add the Upload Image Button at the bottom of the page */}
+      <TouchableOpacity 
+        style={styles.uploadButton}
+        onPress={() => navigation.navigate('UploadImage')}
+      >
+        <Text style={styles.uploadButtonText}>Upload Your Image</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -116,5 +123,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  uploadButton: {
+    backgroundColor: '#1B95E0',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  uploadButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });

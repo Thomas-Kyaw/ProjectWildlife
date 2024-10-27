@@ -13,6 +13,7 @@ import Login from './pages/Login'; // Import login page
 import Register from './pages/Register'; // Import register page
 import Admin from './pages/Admin'; // Create these pages for admin and user redirection
 import User from './pages/User';
+import UploadImage from './pages/UploadImage';
 import './styles/App.css';
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
           <Route path="/register" element={<Register />} /> {/* Register route */}
           <Route path="/admin" element={<Admin />} /> {/* Admin redirect */}
           <Route path="/user" element={<User />} /> {/* User redirect */}
+          <Route path="/upload-image" element={<UploadImage />} />
         </Routes>
       </div>
       <Footer />

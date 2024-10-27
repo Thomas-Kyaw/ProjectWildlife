@@ -2,13 +2,14 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import TabNavigator from './TabNavigator';
 import AnimalDetails from '../screens/AnimalDetails';
+import UploadImage from '../screens/UploadImage'; // Import the UploadImage screen
 import Tourism from '../screens/Tourism';
 import Donation from '../screens/Donation';
 import ContactUs from '../screens/ContactUs';
 import AboutUs from '../screens/AboutUs';
-import Payment from '../screens/Payment';  // Import the Payment screen
-import Login from '../screens/Login';      // Import Login screen
-import Register from '../screens/Register';// Import Register screen
+import Payment from '../screens/Payment';
+import Login from '../screens/Login';
+import Register from '../screens/Register';
 
 const Stack = createStackNavigator();
 
@@ -34,7 +35,7 @@ export default function StackNavigator() {
         name="AnimalDetails" 
         component={AnimalDetails} 
         options={({ route }) => ({
-          title: route.params?.sighting.name || 'Animal Details',  // Use sighting name for title if available
+          title: route.params?.sighting.name || 'Animal Details',
         })}
       />
       <Stack.Screen 
@@ -61,6 +62,11 @@ export default function StackNavigator() {
         name="Payment" 
         component={Payment} 
         options={{ title: 'Complete Donation' }} 
+      />
+      <Stack.Screen 
+        name="UploadImage" 
+        component={UploadImage}  // Add the UploadImage screen
+        options={{ title: 'Upload Image' }} 
       />
     </Stack.Navigator>
   );

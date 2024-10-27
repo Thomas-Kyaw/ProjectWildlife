@@ -26,6 +26,7 @@ const MainNavBar = () => {
         <li><Link to="/about-us">About Us</Link></li>
         <li><Link to="/contact-us">Contact Us</Link></li>
         <li><Link to="/login">Login</Link></li> {/* Link to login page */}
+        <li><Link to="/upload-image">Upload Image</Link></li>
       </ul>
     </nav>
   );
