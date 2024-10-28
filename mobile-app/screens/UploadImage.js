@@ -1,40 +1,38 @@
-import React, { useState } from 'react';
-import { View, Button, Image, Text, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Button, Image, Text, StyleSheet, Alert, ActivityIndicator, Linking } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 
 const UploadImage = () => {
   const [imageUri, setImageUri] = useState(null);
-  const [annotatedImageUri, setAnnotatedImageUri] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState(null);
-  const [csvUrl, setCsvUrl] = useState(null);
+  const [annotatedImageUri, setAnnotatedImageUri] = useState(null); // Annotated image URI from server
+  const [uploading, setUploading] = useState(false);  // State for uploading
+  const [error, setError] = useState(null); // State for error messages
+  const [imgurLink, setImgurLink] = useState(null); // Imgur link from server
+
+  const baseURL = 'http://192.168.1.58:5002'; // Ensure your backend URL is correct
 
   // Function to select an image from the gallery
   const selectImage = async () => {
     try {
-      // Request permission to access media library
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-      if (permissionResult.granted === false) {
+      if (!permissionResult.granted) {
         Alert.alert('Permission Required', 'Permission to access gallery is required!');
         return;
       }
 
-      // Open image picker
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [4, 3],
         quality: 1,
       });
 
       if (!result.canceled) {
+        console.log('Selected Image URI:', result.assets[0].uri); // Debug selected image URI
         setImageUri(result.assets[0].uri);
-        // Reset other states when new image is selected
-        setAnnotatedImageUri(null);
-        setCsvUrl(null);
-        setError(null);
+        setAnnotatedImageUri(null);  // Reset annotated image when new image is selected
+        setImgurLink(null);  // Reset Imgur link
+        setError(null);  // Reset any previous errors
       }
     } catch (error) {
       console.error('Error selecting image:', error);
@@ -49,11 +47,10 @@ const UploadImage = () => {
       return;
     }
 
-    setUploading(true);
-    setError(null);
+    setUploading(true); // Show uploading spinner
+    setError(null); // Clear previous errors
 
     try {
-      // Get file extension from URI
       const uriParts = imageUri.split('.');
       const fileType = uriParts[uriParts.length - 1] || 'jpg';
 
@@ -64,34 +61,46 @@ const UploadImage = () => {
         type: `image/${fileType}`
       });
 
-      // Make API call to your server
-      const response = await axios.post('http://192.168.1.62:5002/api/upload', formData, {
+      // Upload image to server
+      const response = await axios.post(`${baseURL}/api/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Accept': 'application/json',
         },
-        timeout: 30000, // 30 second timeout
+        timeout: 30000,  // 30-second timeout
       });
 
+      console.log('Response from server:', response.data); // Log server response for debugging
+
       if (response.data.annotatedImageUrl) {
-        setAnnotatedImageUri(response.data.annotatedImageUrl);
+        // Add a timestamp to avoid image caching issues
+        const fullAnnotatedImageUrl = `${baseURL}${response.data.annotatedImageUrl}?timestamp=${new Date().getTime()}`;
+        setAnnotatedImageUri(fullAnnotatedImageUrl);  // Set the full URL for annotated image
+        console.log('Annotated Image URL:', fullAnnotatedImageUrl);
       }
 
-      if (response.data.csvUrl) {
-        setCsvUrl(response.data.csvUrl);
+      if (response.data.imgurLink) {
+        setImgurLink(response.data.imgurLink);  // Set the Imgur link
+        console.log('Imgur Link:', response.data.imgurLink);
       }
 
       Alert.alert('Success', 'Image processed successfully');
-
     } catch (error) {
       console.error('Upload error:', error);
       const errorMessage = error.response?.data?.error || 'Failed to upload and process image';
       setError(errorMessage);
       Alert.alert('Error', errorMessage);
     } finally {
-      setUploading(false);
+      setUploading(false); // Hide uploading spinner
     }
   };
+
+  // Watch for changes in the annotated image URI or Imgur link to re-render
+  useEffect(() => {
+    if (annotatedImageUri || imgurLink) {
+      console.log('Rendering image from:', annotatedImageUri || imgurLink); // Log when re-rendering happens
+    }
+  }, [annotatedImageUri, imgurLink]);
 
   return (
     <View style={styles.container}>
@@ -113,21 +122,21 @@ const UploadImage = () => {
       {uploading && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#0000ff" />
-          <Text style={styles.loadingText}>Processing image...</Text>
+          <Text style={styles.loadingText}>Uploading image...</Text>
         </View>
       )}
       
-      {annotatedImageUri && (
+      {/* Show Imgur link image when available */}
+      {imgurLink && (
         <View style={styles.imageContainer}>
-          <Text style={styles.label}>Annotated Image:</Text>
-          <Image source={{ uri: annotatedImageUri }} style={styles.image} />
+          <Text style={styles.label}>Annotated Image (from Imgur):</Text>
+          <Image source={{ uri: imgurLink }} style={styles.image} />
+          <Text style={styles.link} onPress={() => Linking.openURL(imgurLink)}>
+            {imgurLink}
+          </Text>
         </View>
       )}
-      
-      {csvUrl && (
-        <Text style={styles.response}>CSV File: {csvUrl}</Text>
-      )}
-      
+
       {error && (
         <Text style={styles.error}>{error}</Text>
       )}
@@ -135,11 +144,11 @@ const UploadImage = () => {
   );
 };
 
+export default UploadImage;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 20,
   },
   imageContainer: {
@@ -166,11 +175,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
   },
-  response: {
-    marginTop: 20,
-    fontSize: 16,
-    color: 'green',
-  },
   error: {
     marginTop: 10,
     fontSize: 14,
@@ -178,5 +182,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   }
 });
-
-export default UploadImage;

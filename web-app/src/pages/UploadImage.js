@@ -16,7 +16,7 @@ const UploadImage = () => {
     formData.append('file', selectedFile);
 
     try {
-      const response = await fetch('http://localhost:8000/detect/', {
+      const response = await fetch('http://localhost:8000/detect_and_upload/', {
         method: 'POST',
         body: formData,
       });

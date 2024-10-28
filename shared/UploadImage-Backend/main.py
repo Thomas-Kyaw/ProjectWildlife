@@ -4,6 +4,7 @@ import csv
 import shutil
 import cv2
 import shutil
+import requests
 from datetime import datetime  # Fix: Import datetime
 from pathlib import Path
 from fastapi import FastAPI, File, UploadFile, HTTPException  # Fix: Added HTTPException
@@ -109,8 +110,30 @@ def save_to_csv(data, output_file):
 
         writer.writerows(rows)
 
-@app.post("/detect/")
-async def detect(file: UploadFile = File(...)):
+# Function to upload the image to Imgur
+def upload_to_imgur(image_path):
+    IMGUR_CLIENT_ID = '6fcda787d4027cc'  # Replace with your Client ID from the image
+    IMGUR_CLIENT_SECRET = '8759bccacf71a5a7b9f293ae3f6a19d286e1cd2'  # Replace with your Client Secret
+
+    headers = {
+        'Authorization': f'Client-ID {IMGUR_CLIENT_ID}',
+    }
+
+    with open(image_path, 'rb') as image_file:
+        image_data = image_file.read()
+
+    response = requests.post("https://api.imgur.com/3/upload", headers=headers, files={'image': image_data})
+
+    if response.status_code == 200:
+        image_url = response.json()['data']['link']
+        print(f"Image uploaded to Imgur: {image_url}")
+        return image_url
+    else:
+        raise Exception(f"Failed to upload image to Imgur: {response.content}")
+
+# Modified detect_and_upload function to return the Imgur link
+@app.post("/detect_and_upload/")
+async def detect_and_upload(file: UploadFile = File(...)):
     try:
         # Validate file type
         if not file.content_type.startswith('image/'):
@@ -134,8 +157,6 @@ async def detect(file: UploadFile = File(...)):
 
         print(f"Processing image at: {upload_path}")
         results = model(image)
-        print(f"YOLO results: {results}")  # Add this line to log YOLO results
-
         annotated_image = results[0].plot()
 
         # Save annotated image
@@ -145,24 +166,12 @@ async def detect(file: UploadFile = File(...)):
 
         print(f"Annotated image saved to: {output_annotated_path}")
 
-        # Process text and create CSV
-        detected_text = detect_text(upload_path)
-        print(f"Detected text: {detected_text}")  # Log detected text
-        
-        extracted_data = extract_date_time_temperature(detected_text)
-        print(f"Extracted data: {extracted_data}")  # Log extracted data
-
-        output_csv_file = os.path.join(OUTPUT_DIRECTORY, f'data_{unique_filename}.csv')
-        save_to_csv(extracted_data, output_csv_file)
-
-        print(f"CSV saved to: {output_csv_file}")
-
-        # Clean up original upload
-        os.remove(upload_path)
+        # Upload the annotated image to Imgur
+        imgur_link = upload_to_imgur(output_annotated_path)
 
         return {
             "image_path": f"/static/annotated/{annotated_filename}",
-            "csv_path": f"/static/output/data_{unique_filename}.csv"
+            "imgur_link": imgur_link  # Return the Imgur link
         }
 
     except Exception as e:

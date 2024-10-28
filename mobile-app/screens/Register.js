@@ -12,7 +12,7 @@ export default function Register({ navigation }) {
     try {
       console.log('Registration started'); // Log when registration starts
   
-      const response = await axios.post('http://192.168.1.62:5002/api/auth/register', {
+      const response = await axios.post('http://192.168.1.58:5002/api/auth/register', {
         email,
         password,
       });

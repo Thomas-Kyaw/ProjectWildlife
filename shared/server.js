@@ -7,6 +7,7 @@ const multer = require('multer'); // For file uploads
 const path = require('path');
 const fs = require('fs'); // For file reading
 const axios = require('axios');
+const FormData = require('form-data'); // For creating form data for Python API
 require('dotenv').config();
 
 const app = express();
@@ -193,93 +194,6 @@ app.get('/api/auth/profile', async (req, res) => {
   }
 });
 
-// Add file type validation middleware
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image/')) {
-    cb(null, true);
-  } else {
-    cb(new Error('Not an image! Please upload an image.'), false);
-  }
-};
-
-// Modified multer configuration
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'image-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({ 
-  storage: storage,
-  fileFilter: fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit
-  }
-});
-
-// Create the upload directory if it doesn't exist
-if (!fs.existsSync('uploads')) {
-  fs.mkdirSync('uploads');
-}
-
-// Modified upload endpoint
-app.post('/api/upload', upload.single('file'), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
-    }
-
-    console.log('File received:', req.file);  // Add this to see what Express receives
-
-    const uploadedFilePath = req.file.path;
-
-    // Create form data for Python API
-    const FormData = require('form-data');
-    const formData = new FormData();
-    formData.append('file', fs.createReadStream(uploadedFilePath), {
-      filename: req.file.filename,
-      contentType: req.file.mimetype
-    });
-
-    console.log('FormData created, sending request to Python API...');
-
-    // Send request to Python API
-    const pythonApiUrl = 'http://localhost:8000/detect/';
-    const pythonResponse = await axios.post(pythonApiUrl, formData, {
-      headers: {
-        ...formData.getHeaders(),
-      },
-      maxContentLength: Infinity,
-      maxBodyLength: Infinity
-    });
-
-    console.log('Response from Python API:', pythonResponse.data);
-
-    // Clean up the uploaded file after processing
-    fs.unlink(uploadedFilePath, (err) => {
-      if (err) console.error('Error deleting uploaded file:', err);
-    });
-
-    res.status(200).json({
-      message: 'Image processed successfully',
-      annotatedImageUrl: pythonResponse.data.image_path,
-      csvUrl: pythonResponse.data.csv_path
-    });
-
-  } catch (error) {
-    console.error('Upload error:', error.response?.data || error.message);
-    res.status(500).json({ 
-      error: 'Server error during file upload or processing',
-      details: error.response?.data || error.message 
-    });
-  }
-});
-
-
 // Mock user creation function
 const createMockUsers = async () => {
   try {
@@ -316,6 +230,94 @@ const createMockUsers = async () => {
     console.error('Error creating mock users:', error);
   }
 };
+
+// Add file type validation middleware
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Not an image! Please upload an image.'), false);
+  }
+};
+
+// Multer configuration for file storage
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'image-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ 
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  }
+});
+
+// Create the upload directory if it doesn't exist
+if (!fs.existsSync('uploads')) {
+  fs.mkdirSync('uploads');
+}
+
+// Upload endpoint that interacts with Python API
+app.post('/api/upload', upload.single('file'), async (req, res) => {
+  try {
+    // Ensure file is uploaded
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    console.log('File received:', req.file);
+
+    const uploadedFilePath = req.file.path;
+
+    // Create form data for Python API
+    const formData = new FormData();
+    formData.append('file', fs.createReadStream(uploadedFilePath), {
+      filename: req.file.filename,
+      contentType: req.file.mimetype
+    });
+
+    console.log('FormData created, sending request to Python API...');
+
+    // Send request to Python API (ensure the endpoint is correct)
+    const pythonApiUrl = 'http://localhost:8000/detect_and_upload/';
+    const pythonResponse = await axios.post(pythonApiUrl, formData, {
+      headers: {
+        ...formData.getHeaders(),
+      },
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity
+    });
+
+    console.log('Response from Python API:', pythonResponse.data);
+
+    // Clean up the uploaded file after processing
+    fs.unlink(uploadedFilePath, (err) => {
+      if (err) console.error('Error deleting uploaded file:', err);
+    });
+
+    // Send response to client
+    res.status(200).json({
+      message: 'Image processed successfully',
+      annotatedImageUrl: pythonResponse.data.image_path,
+      csvUrl: pythonResponse.data.csv_path,
+      imgurLink: pythonResponse.data.imgur_link // Include the Imgur link
+    });
+
+  } catch (error) {
+    console.error('Upload error:', error.response?.data || error.message);
+    res.status(500).json({ 
+      error: 'Server error during file upload or processing',
+      details: error.response?.data || error.message 
+    });
+  }
+});
 
 // Start the server
 const PORT = process.env.PORT || 5002; // Changed to 5002

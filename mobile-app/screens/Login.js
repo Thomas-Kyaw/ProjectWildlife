@@ -13,7 +13,7 @@ export default function Login({ navigation }) {
     try {
       console.log('Login started'); // Add this log to see when login starts
   
-      const response = await axios.post('http://192.168.1.62:5002/api/auth/login', {
+      const response = await axios.post('http://192.168.1.58:5002/api/auth/login', {
         email,
         password,
       });
